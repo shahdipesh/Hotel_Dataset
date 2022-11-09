@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/SQLServerDemo.java" dialect="GenericSQL" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/ca63b565-73e1-49fe-b7ee-0259f35c8279/console.sql" dialect="TSQL" />
+  </component>
+</project>
