@@ -2,7 +2,9 @@ import java.sql.*;
 import java.text.DecimalFormat;
 
 public class TopQueries {
-    public void top5Hotels(String connectionUrl) {
+    public StringBuilder top5Hotels(String connectionUrl) {
+
+        StringBuilder sb = new StringBuilder();
 
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
@@ -16,20 +18,20 @@ public class TopQueries {
                     "\n";
             ResultSet rs = stmt.executeQuery(SQL);
 
-            boolean first = true;
-
-            System.out.println("\n\n|--------------------------------------------------------------------------| ");
-            System.out.println("| Hotel Name || Number of positive Reviews || Number of Negative Reviews)  |");
-            System.out.println("|--------------------------------------------------------------------------| \n");
-
+            // Iterate through the data in the result set and add to string builder and display in arranged format.
             while (rs.next()) {
-                if (first) {
-                    System.out.println("|--------------------------------------------------------------------------|");
-                    first = false;
-                }
-
-                System.out.println(" "+rs.getString("Hotel_Name") + " || " + rs.getString("Total_positive_reviews") + " || " + rs.getString("Total_negative_reviews"));
-                System.out.println("|--------------------------------------------------------------------------|");
+                String hotelName = rs.getString("Hotel_Name");
+                int totalPositiveReviews = rs.getInt("Total_positive_reviews");
+                int totalNegativeReviews = rs.getInt("Total_negative_reviews");
+                int totalReviews = totalPositiveReviews + totalNegativeReviews;
+                double positiveReviewPercentage = (double) totalPositiveReviews / totalReviews * 100;
+                DecimalFormat df = new DecimalFormat("#.##");
+                sb.append("Hotel Name: " + hotelName + "\n");
+                sb.append("Total Positive Reviews: " + totalPositiveReviews + "\n");
+                sb.append("Total Negative Reviews: " + totalNegativeReviews + "\n");
+                sb.append("Total Reviews: " + totalReviews + "\n");
+                sb.append("Positive Review Percentage: " + df.format(positiveReviewPercentage) + "%" + "\n");
+                sb.append("----------------------------------------" + "\n");
 
             }
         }
@@ -37,10 +39,11 @@ public class TopQueries {
         catch (SQLException e) {
             e.printStackTrace();
         }
-
+        return sb;
     }
 
-    public void averageStayDurationPerHotel(String connectionUrl) {
+    public StringBuilder averageStayDurationPerHotel(String connectionUrl) {
+        StringBuilder sb = new StringBuilder();
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
 
@@ -50,24 +53,26 @@ public class TopQueries {
                     "    order by Average_stay_duration_in_days desc\n";
             ResultSet rs = stmt.executeQuery(SQL);
 
-            // Iterate through the data in the result set and display it.
-            System.out.println("\n\n|--------------------------------------------------------------------------| ");
-            System.out.println("| Hotel Name || Average Stay Duration in Days |");
-            System.out.println("|--------------------------------------------------------------------------| \n");
 
             while (rs.next()) {
-                System.out.println("| " + rs.getString("Hotel_Name") + " || " + rs.getString("Average_stay_duration_in_days"));
-                System.out.println("|--------------------------------------------------------------------------|");
-
+                String hotelName = rs.getString("Hotel_Name");
+                double averageStayDuration = rs.getDouble("Average_stay_duration_in_days");
+                DecimalFormat df = new DecimalFormat("#.##");
+                sb.append("Hotel Name: " + hotelName + "\n");
+                sb.append("Average Stay Duration: " + df.format(averageStayDuration) + " days" + "\n");
+                sb.append("----------------------------------------" + "\n");
             }
+
         }
         // Handle any errors that may have occurred.
         catch (SQLException e) {
             e.printStackTrace();
         }
+        return sb;
     }
 
-    public void averageStayDurationPerTripType(String connectionUrl) {
+    public StringBuilder averageStayDurationPerTripType(String connectionUrl) {
+        StringBuilder sb = new StringBuilder();
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
 
@@ -78,23 +83,26 @@ public class TopQueries {
                     "    order by avgStayDuration desc ";
             ResultSet rs = stmt.executeQuery(SQL);
 
-            System.out.println("\n\n|-------------------------------------------------------------------| ");
-            System.out.println("|    Trip Type || Average Stay Duration in Days |");
-            System.out.println("|-------------------------------------------------------------------| \n");
-
 
             while (rs.next()) {
-                System.out.println("|    " + rs.getString("Trip_Type") + " || " + rs.getString("avgStayDuration") );
-                System.out.println("|-------------------------------------------------------------------|");
+                String tripType = rs.getString("Trip_Type");
+                double averageStayDuration = rs.getDouble("avgStayDuration");
+                int rowsEvaluated = rs.getInt("rowsEvaluated");
+                DecimalFormat df = new DecimalFormat("#.##");
+                sb.append("Trip Type: " + tripType + "\n");
+                sb.append("Average Stay Duration: " + df.format(averageStayDuration) + " days" + "\n");
+                sb.append("----------------------------------------" + "\n");
             }
+
         }
         // Handle any errors that may have occurred.
         catch (SQLException e) {
             e.printStackTrace();
         }
+        return sb;
     }
 
-    public void reviewsPerQuarter(String connectionUrl) {
+    public StringBuilder reviewsPerQuarter(String connectionUrl) {
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
 
@@ -106,25 +114,23 @@ public class TopQueries {
                     "order by numberOfReviews desc ";
             ResultSet rs = stmt.executeQuery(SQL);
 
-            // Iterate through the data in the result set and display it.
-
-            System.out.println("\n------Quarter Of Year-------||---------No. of Reviews------------");
-
+            StringBuilder sb = new StringBuilder();
             while (rs.next()) {
-                System.out.println("|           " + rs.getString("Quarter_of_Year") + "                               " +
-                        "" + rs.getString("numberOfReviews") + "");
-                System.out.println("-----------------------------------------------------------------");
+                String quarterOfYear = rs.getString("Quarter_of_Year");
+                int numberOfReviews = rs.getInt("numberOfReviews");
+                sb.append("Quarter of Year: " + quarterOfYear + "\n");
+                sb.append("Number of Reviews: " + numberOfReviews + "\n");
+                sb.append("----------------------------------------" + "\n");
             }
-        }
-        // Handle any errors that may have occurred.
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
+            return sb;
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    // average hotel rating per country
-    public void avgHotelRatingPerCountry(String connectionUrl) {
+    public StringBuilder avgHotelRatingPerCountry(String connectionUrl) {
+        StringBuilder sb = new StringBuilder();
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
 
@@ -140,23 +146,27 @@ public class TopQueries {
             ResultSet rs = stmt.executeQuery(SQL);
 
             // Iterate through the data in the result set and display it.
-
-            System.out.println("\n|------Country-------||---------Avg Rating of hotels--------------|\n");
-
             while (rs.next()) {
-                System.out.println("    " + rs.getString("Country").trim() + "   ||  " +
-                        " " + rs.getString("Avg_Hotel_Rating") + "");
-                System.out.println("|-----------------------------------------------------------------|");
+                String country = rs.getString("Country");
+                double avgHotelRating = rs.getDouble("Avg_Hotel_Rating");
+                DecimalFormat df = new DecimalFormat("#.##");
+                sb.append("Country: " + country + "\n");
+                sb.append("Average Hotel Rating: " + df.format(avgHotelRating) + ".0\n");
+//                sb.append("Number of Hotels Available: " + numHotels + "\n");
+                sb.append("----------------------------------------" + "\n");
             }
+
         }
         // Handle any errors that may have occurred.
         catch (SQLException e) {
             e.printStackTrace();
         }
+        return sb;
 
     }
 
-    public void hotelsWithForeignNational(String connectionUrl) {
+    public StringBuilder hotelsWithForeignNational(String connectionUrl) {
+        StringBuilder sb = new StringBuilder();
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
 
@@ -170,27 +180,33 @@ public class TopQueries {
                     "    join Nationality_Country_Info on Review.Reviewer_Nationality=Nationality_Country_Info.Reviewer_Nationality\n" +
                     "where Hotel_Country!=Reviewer_Country\n" +
                     "group by Hotel.Hotel_Name, Hotel_Country\n" +
-                    "order by No_of_foreign_National_who_reviewed desc\n";
+                    "order by No_of_foreign_National_who_reviewed desc\n" +
+                    " offset 0 rows fetch next 10 rows only";
             ResultSet rs = stmt.executeQuery(SQL);
 
             // Iterate through the data in the result set and display it.
 
-            System.out.println("\n\n|----Hotel Name || Hotel Country || No. of foreign national)----|\n");
 
             while (rs.next()) {
-                System.out.println(" " + rs.getString("Hotel_Name") + " || " +
-                        " "+rs.getString("location") +" || "+ rs.getString("No_of_foreign_National_who_reviewed") + "");
-                System.out.println("|---------------------------------------------------------------------------|");
+                String hotelName = rs.getString("Hotel_Name");
+                String location = rs.getString("location");
+                int noOfForeignNational = rs.getInt("No_of_foreign_National_who_reviewed");
+                sb.append("Hotel Name: " + hotelName + "\n");
+                sb.append("Location: " + location + "\n");
+                sb.append("Reviews By Foreign National: " + noOfForeignNational + "\n");
+                sb.append("------------------------------------------");
+                sb.append(" " + "\n");
             }
 
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return sb;
     }
 
-    public void percentReviewInHoliday(String connectionUrl) {
-
+    public StringBuilder preferredDevice(String connectionUrl) {
+        StringBuilder sb = new StringBuilder();
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
             String sql = "(select (count(*)*1.0/(select count(*)*1.0 from Review as aa)*100)as PercentReviewByMob  from Review where Submitted_from_Mobile=1 )\n";
@@ -199,18 +215,21 @@ public class TopQueries {
             //get only 2 decimal places
             DecimalFormat df = new DecimalFormat("#.##");
 
-            while (rs.next()) {
-                System.out.println( df.format(rs.getDouble("PercentReviewByMob")) + "% reviews were made using mobile phone \n");
 
+            while (rs.next()) {
+                double percentReviewByMob = rs.getDouble("PercentReviewByMob");
+                sb.append(df.format(percentReviewByMob) + "% of Reviews were made using Mobile Phone\n");
+                sb.append(" " + "\n");
             }
+
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        return sb;
     }
-
 }
+
 
 
 
