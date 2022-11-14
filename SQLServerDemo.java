@@ -1,6 +1,8 @@
+import javax.swing.*;
 import java.io.*;
 import java.sql.*;
 import java.util.Properties;
+import java.util.Scanner;
 
 import static java.lang.Integer.parseInt;
 
@@ -9,6 +11,10 @@ public class SQLServerDemo {
     // Connect to your database.
     // Replace server name, username, and password with your credentials
     public static void main(String[] args) throws SQLException, IOException {
+
+
+
+
         InsertQueries insertQueries = new InsertQueries();
         TopQueries topQueries = new TopQueries();
         Properties prop = new Properties();
@@ -41,15 +47,71 @@ public class SQLServerDemo {
                 + "trustServerCertificate=false;"
                 + "loginTimeout=30;";
 
-     //   insertQueries.insertNegativeReviewWordCount(connectionUrl);
 
-     //topQueries.top5Hotels(connectionUrl);
-     //topQueries.averageStayDurationPerHotel(connectionUrl);
-     //topQueries.averageStayDurationPerTripType(connectionUrl);
-        // topQueries.reviewsPerQuarter(connectionUrl);
-    // topQueries.avgHotelRatingPerCountry(connectionUrl);
-    // topQueries.hotelsWithForeignNational(connectionUrl);
 
+        //create a button that says "Click Me" and when clicked, calls the topQueries.top5Hotels(connectionUrl) method and displays the results in console
+        JButton getTopHotels = new JButton("Top Hotels");
+        getTopHotels.addActionListener(e -> {
+            topQueries.top5Hotels(connectionUrl);
+        });
+        // set up the JFrame with size 1000 and display it
+        JFrame frame = new JFrame("SQL Server Demo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(getTopHotels);
+        frame.setSize(1000, 1000);
+        frame.setVisible(true);
+
+
+
+
+
+
+
+
+//
+//        Scanner console = new Scanner(System.in);
+//        System.out.print("Welcome! Type h for help. ");
+//        System.out.print("db > ");
+//        String line = console.nextLine();
+//        String[] parts;
+//        String arg = "";
+//
+//        while (line != null && !line.equals("q")) {
+//            parts = line.split("\\s+");
+//            if (line.indexOf(" ") > 0)
+//                arg = line.substring(line.indexOf(" ")).trim();
+//            if (parts[0].equals("h"))
+//                printHelp();
+//            else if (parts[0].equals("topHotels")) {
+//                topQueries.top5Hotels(connectionUrl);
+//            }
+//            else if (parts[0].equals("avgStayDurationHotel")) {
+//                topQueries.averageStayDurationPerHotel(connectionUrl);
+//            }
+//            else if (parts[0].equals("avgStayDurationTripType")) {
+//                topQueries.averageStayDurationPerTripType(connectionUrl);
+//            }
+//            else if (parts[0].equals("reviewsPerQuarter")) {
+//                topQueries.reviewsPerQuarter(connectionUrl);
+//            }
+//            else if (parts[0].equals("ratingPerCountry")) {
+//                topQueries.avgHotelRatingPerCountry(connectionUrl);
+//            }
+//            else if (parts[0].equals("preferredByForeigners")) {
+//                topQueries.hotelsWithForeignNational(connectionUrl);
+//            }
+//            else if (parts[0].equals("percentReviewsByMobile")) {
+//                topQueries.percentReviewInHoliday(connectionUrl);
+//            }
+//
+//
+//
+//            else {
+//                System.out.println("Read the help with h, and run a valid query.");
+//            }
+//            System.out.print("db > ");
+//            line = console.nextLine();
+//        }
 
 
     }
@@ -60,18 +122,15 @@ public class SQLServerDemo {
 
 
     private static void printHelp() {
-        System.out.println("Library database");
         System.out.println("Commands:");
         System.out.println("h - Get help");
-        System.out.println("s <name> - Search for a name");
-        System.out.println("l <id> - Search for a user by id");
-        System.out.println("sell <author id> - Search for a stores that sell books by this id");
-        System.out.println("notread - Books not read by its own author");
-        System.out.println("all - Authors that have read all their own books");
-        System.out.println("notsell <author id>  - list of stores that do not sell this author");
-        System.out.println("mp - Authors with the most publishers");
-        System.out.println("mc - Authors with books in the most cities");
-        System.out.println("mr - Most read book by country");
+        System.out.println("topHotels - Top 5 hotels with the most number of good reviews");
+        System.out.println("avgStayDurationHotel - Average stay duration per hotel");
+        System.out.println("reviewsPerQuarter - Get how many reviews were made per quarter of the year in the platform");
+        System.out.println("ratingPerCountry - Countries based on average hotel rating");
+        System.out.println("avgStayDurationTripType - Average stay duration of different type of guests");
+        System.out.println("preferredByForeigners - list of hotels that are preferred by foreign nationals, based on how many reviews are by foreigners");
+        System.out.println("percentReviewsByMobile - Percentage of reviews made users using their mobile phone");
         System.out.println("");
 
         System.out.println("q - Exit the program");

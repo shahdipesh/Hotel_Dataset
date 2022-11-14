@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.text.DecimalFormat;
 
 public class TopQueries {
     public void top5Hotels(String connectionUrl) {
@@ -15,11 +16,20 @@ public class TopQueries {
                     "\n";
             ResultSet rs = stmt.executeQuery(SQL);
 
-            // Iterate through the data in the result set and display it.
-            System.out.println("Top 5 Hotels with highest number of positive reviews");
+            boolean first = true;
+
+            System.out.println("\n\n|--------------------------------------------------------------------------| ");
+            System.out.println("| Hotel Name || Number of positive Reviews || Number of Negative Reviews)  |");
+            System.out.println("|--------------------------------------------------------------------------| \n");
 
             while (rs.next()) {
-                System.out.println("Name: " + rs.getString("Hotel_Name") + "   --- Positive Reviews: " + rs.getString("Total_positive_reviews") + "    ---Negative Reviews: " + rs.getString("Total_negative_reviews"));
+                if (first) {
+                    System.out.println("|--------------------------------------------------------------------------|");
+                    first = false;
+                }
+
+                System.out.println(" "+rs.getString("Hotel_Name") + " || " + rs.getString("Total_positive_reviews") + " || " + rs.getString("Total_negative_reviews"));
+                System.out.println("|--------------------------------------------------------------------------|");
 
             }
         }
@@ -41,11 +51,13 @@ public class TopQueries {
             ResultSet rs = stmt.executeQuery(SQL);
 
             // Iterate through the data in the result set and display it.
-            System.out.println("Country with most number of hotels");
+            System.out.println("\n\n|--------------------------------------------------------------------------| ");
+            System.out.println("| Hotel Name || Average Stay Duration in Days |");
+            System.out.println("|--------------------------------------------------------------------------| \n");
 
             while (rs.next()) {
-                System.out.println("Name: " + rs.getString("Hotel_Name") + "   --- Average Stay Duration: " + rs.getString("Average_stay_duration_in_days"));
-
+                System.out.println("| " + rs.getString("Hotel_Name") + " || " + rs.getString("Average_stay_duration_in_days"));
+                System.out.println("|--------------------------------------------------------------------------|");
 
             }
         }
@@ -66,12 +78,14 @@ public class TopQueries {
                     "    order by avgStayDuration desc ";
             ResultSet rs = stmt.executeQuery(SQL);
 
-            // Iterate through the data in the result set and display it.
-            System.out.println("Average Stay Duration Per Trip Type");
-            System.out.println("------------------------------------");
+            System.out.println("\n\n|-------------------------------------------------------------------| ");
+            System.out.println("|    Trip Type || Average Stay Duration in Days |");
+            System.out.println("|-------------------------------------------------------------------| \n");
+
 
             while (rs.next()) {
-                System.out.println("Trip Type: " + rs.getString("Trip_Type") + "   --- Average Stay Duration: " + rs.getString("avgStayDuration") + " ---No. of reviews by this guest type: " + rs.getString("rowsEvaluated"));
+                System.out.println("|    " + rs.getString("Trip_Type") + " || " + rs.getString("avgStayDuration") );
+                System.out.println("|-------------------------------------------------------------------|");
             }
         }
         // Handle any errors that may have occurred.
@@ -93,8 +107,8 @@ public class TopQueries {
             ResultSet rs = stmt.executeQuery(SQL);
 
             // Iterate through the data in the result set and display it.
-            System.out.println("Reviews Per Quarter");
-            System.out.println("------Quarter Of Year-------||---------No. of Reviews--------------");
+
+            System.out.println("\n------Quarter Of Year-------||---------No. of Reviews------------");
 
             while (rs.next()) {
                 System.out.println("|           " + rs.getString("Quarter_of_Year") + "                               " +
@@ -126,13 +140,13 @@ public class TopQueries {
             ResultSet rs = stmt.executeQuery(SQL);
 
             // Iterate through the data in the result set and display it.
-            System.out.println("Average Hotel Rating Per Country\n");
-            System.out.println("---(Country, Avg Rating of hotels)-----\n");
+
+            System.out.println("\n|------Country-------||---------Avg Rating of hotels--------------|\n");
 
             while (rs.next()) {
-                System.out.println("|    " + rs.getString("Country").trim() + "," +
+                System.out.println("    " + rs.getString("Country").trim() + "   ||  " +
                         " " + rs.getString("Avg_Hotel_Rating") + "");
-                System.out.println("---------------------------------");
+                System.out.println("|-----------------------------------------------------------------|");
             }
         }
         // Handle any errors that may have occurred.
@@ -146,7 +160,8 @@ public class TopQueries {
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
 
-            String SQL = "select Hotel.Hotel_Name, count(Reviewer_Country) as No_of_foreign_National_who_reviewed\n" +
+            String SQL = "---hotels that host most number of foreign nationals based on reviews\n" +
+                    "select Hotel.Hotel_Name,(select Reviewer_Nationality from Nationality_Country_Info where Reviewer_Country = Hotel_Country) as location, count(Reviewer_Country) as No_of_foreign_National_who_reviewed\n" +
                     "    from Review\n" +
                     "    join Hotel on Hotel.Hotel_Name = Review.Hotel_Name\n" +
                     "    join Address on Hotel.Hotel_Address = Address.Hotel_Address\n" +
@@ -154,18 +169,18 @@ public class TopQueries {
                     "    join City_Info on City_Info.Hotel_City = Coordinate.Hotel_City\n" +
                     "    join Nationality_Country_Info on Review.Reviewer_Nationality=Nationality_Country_Info.Reviewer_Nationality\n" +
                     "where Hotel_Country!=Reviewer_Country\n" +
-                    "group by Hotel.Hotel_Name\n" +
-                    "order by No_of_foreign_National_who_reviewed desc";
+                    "group by Hotel.Hotel_Name, Hotel_Country\n" +
+                    "order by No_of_foreign_National_who_reviewed desc\n";
             ResultSet rs = stmt.executeQuery(SQL);
 
             // Iterate through the data in the result set and display it.
-            System.out.println("Hotels with foreign national\n");
-            System.out.println("---(Hotel Name, No. of foreign national who reviewed)---\n");
+
+            System.out.println("\n\n|----Hotel Name || Hotel Country || No. of foreign national)----|\n");
 
             while (rs.next()) {
-                System.out.println("" + rs.getString("Hotel_Name") + "," +
-                        " " + rs.getString("No_of_foreign_National_who_reviewed") + "");
-                System.out.println("-----------------------------------------------------------------");
+                System.out.println(" " + rs.getString("Hotel_Name") + " || " +
+                        " "+rs.getString("location") +" || "+ rs.getString("No_of_foreign_National_who_reviewed") + "");
+                System.out.println("|---------------------------------------------------------------------------|");
             }
 
 
@@ -173,6 +188,28 @@ public class TopQueries {
             throw new RuntimeException(e);
         }
     }
+
+    public void percentReviewInHoliday(String connectionUrl) {
+
+        try (Connection con = DriverManager.getConnection(connectionUrl);
+             Statement stmt = con.createStatement();) {
+            String sql = "(select (count(*)*1.0/(select count(*)*1.0 from Review as aa)*100)as PercentReviewByMob  from Review where Submitted_from_Mobile=1 )\n";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            //get only 2 decimal places
+            DecimalFormat df = new DecimalFormat("#.##");
+
+            while (rs.next()) {
+                System.out.println( df.format(rs.getDouble("PercentReviewByMob")) + "% reviews were made using mobile phone \n");
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }
 
 
