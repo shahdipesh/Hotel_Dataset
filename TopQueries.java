@@ -16,7 +16,11 @@ public class TopQueries {
                     "group by Hotel_Name\n" +
                     "order by total_positive_reviews desc offset 0 rows fetch next 5 rows only\n" +
                     "\n";
-            ResultSet rs = stmt.executeQuery(SQL);
+
+            //make the query sqlinjection safe
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            ResultSet rs = pstmt.executeQuery();
+
 
             // Iterate through the data in the result set and add to string builder and display in arranged format.
             while (rs.next()) {
@@ -28,9 +32,8 @@ public class TopQueries {
                 DecimalFormat df = new DecimalFormat("#.##");
                 sb.append("Hotel Name: " + hotelName + "\n");
                 sb.append("Total Positive Reviews: " + totalPositiveReviews + "\n");
-                sb.append("Total Negative Reviews: " + totalNegativeReviews + "\n");
                 sb.append("Total Reviews: " + totalReviews + "\n");
-                sb.append("Positive Review Percentage: " + df.format(positiveReviewPercentage) + "%" + "\n");
+                sb.append("Positivity sentiment: " + df.format(positiveReviewPercentage) + "%" + "\n");
                 sb.append("----------------------------------------" + "\n");
 
             }
@@ -51,9 +54,8 @@ public class TopQueries {
                     "    from Review\n" +
                     "    group by Hotel_Name\n" +
                     "    order by Average_stay_duration_in_days desc\n";
-            ResultSet rs = stmt.executeQuery(SQL);
-
-
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 String hotelName = rs.getString("Hotel_Name");
                 double averageStayDuration = rs.getDouble("Average_stay_duration_in_days");
@@ -81,9 +83,8 @@ public class TopQueries {
                     "  where Trip_Type != 'NULL'" +
                     "    group by Trip_Type " +
                     "    order by avgStayDuration desc ";
-            ResultSet rs = stmt.executeQuery(SQL);
-
-
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 String tripType = rs.getString("Trip_Type");
                 double averageStayDuration = rs.getDouble("avgStayDuration");
@@ -112,7 +113,9 @@ public class TopQueries {
                     "join Part_of_year on Date.Day_of_Year = Part_of_year.Day_of_Year\n" +
                     "group by Part_of_year.Quarter_of_Year\n" +
                     "order by numberOfReviews desc ";
-            ResultSet rs = stmt.executeQuery(SQL);
+
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            ResultSet rs = pstmt.executeQuery();
 
             StringBuilder sb = new StringBuilder();
             while (rs.next()) {
@@ -143,7 +146,8 @@ public class TopQueries {
                     "    join Nationality_Country_Info NCI on Hotel_Country=NCI.Reviewer_Country\n" +
                     "group by NCI.Reviewer_Nationality\n" +
                     "order by Avg_Hotel_Rating desc ";
-            ResultSet rs = stmt.executeQuery(SQL);
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            ResultSet rs = pstmt.executeQuery();
 
             // Iterate through the data in the result set and display it.
             while (rs.next()) {
@@ -209,8 +213,9 @@ public class TopQueries {
         StringBuilder sb = new StringBuilder();
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
-            String sql = "(select (count(*)*1.0/(select count(*)*1.0 from Review as aa)*100)as PercentReviewByMob  from Review where Submitted_from_Mobile=1 )\n";
-            ResultSet rs = stmt.executeQuery(sql);
+            String SQL = "(select (count(*)*1.0/(select count(*)*1.0 from Review as aa)*100)as PercentReviewByMob  from Review where Submitted_from_Mobile=1 )\n";
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            ResultSet rs = pstmt.executeQuery();
 
             //get only 2 decimal places
             DecimalFormat df = new DecimalFormat("#.##");
@@ -228,7 +233,73 @@ public class TopQueries {
         }
         return sb;
     }
-}
+
+    public StringBuilder searchByCityName(String connectionUrl, String cityName) {
+        StringBuilder sb = new StringBuilder();
+        try (Connection con = DriverManager.getConnection(connectionUrl);
+             Statement stmt = con.createStatement();) {
+            String SQL = "select * from Review\n" +
+                    "join Hotel H on Review.Hotel_Name = H.Hotel_Name\n" +
+                    "join Address A on A.Hotel_Address = H.Hotel_Address\n" +
+                    "join Coordinate C on A.Hotel_lat = C.Hotel_lat and A.Hotel_lng = C.Hotel_lng\n" +
+                    "join City_Info CI on C.Hotel_City = CI.Hotel_City\n" +
+                    "where CI.Hotel_City = ?"+ "'" + "'";
+
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            pstmt.setString(1, cityName);
+            ResultSet rs = pstmt.executeQuery();
+
+
+            while (rs.next()) {
+
+                String hotelName = rs.getString("Hotel_Name");
+                String hotelAddress = rs.getString("Hotel_Address");
+
+                sb.append("Hotel Name: " + hotelName + "\n");
+                sb.append("Hotel Address: " + hotelAddress + "\n");
+                sb.append("------------------------------------------\n");
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return sb;
+    }
+
+
+    public StringBuilder businessWithin100m (String connectionUrl) {
+        StringBuilder sb = new StringBuilder();
+        try (Connection con = DriverManager.getConnection(connectionUrl);
+             Statement stmt = con.createStatement();) {
+            String SQL = "select Review.Hotel_Name,A.Hotel_Address,Businesses_100m from Review\n" +
+                    "join Hotel H on Review.Hotel_Name = H.Hotel_Name\n" +
+                    "join Address A on A.Hotel_Address = H.Hotel_Address\n" +
+                    "join Coordinate C on C.Hotel_lat = A.Hotel_lat and C.Hotel_lng = A.Hotel_lng\n" +
+                    "group by Review.Hotel_Name,Businesses_100m,A.Hotel_Address\n" +
+                    "having Businesses_100m >50\n" +
+                    "order by Businesses_100m desc;";
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String hotelName = rs.getString("Hotel_Name");
+                String hotelAddress = rs.getString("Hotel_Address");
+                int businesses100m = rs.getInt("Businesses_100m");
+
+                sb.append("Hotel Name: " + hotelName + "\n");
+                sb.append("Hotel Address: " + hotelAddress + "\n");
+                sb.append("Businesses within 100m: " + businesses100m + "\n");
+                sb.append("------------------------------------------\n");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return sb;
+    }
+
+    }
 
 
 

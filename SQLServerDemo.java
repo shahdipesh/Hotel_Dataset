@@ -19,15 +19,14 @@ public class SQLServerDemo {
         util.config();
 
 
-        //create a GUI with button which on click calls topQueries.top5Hotels(connectionUrl).
 
+   // InsertQueries.insertPositiveReviewWordCount(util.getConnectionUrl());
+
+//
         JFrame frame = new JFrame("Hotel Reviews");
-        //customize frame colour
 
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
 
 
         JButton top5Hotels = new JButton("Top 5 Hotels");
@@ -37,8 +36,19 @@ public class SQLServerDemo {
         JButton hotelRatingPerCountry = new JButton("Countries with best hotels");
         JButton hotelsWithForeignNational = new JButton("Hotels hotly debated among foreign nationals");
         JButton preferredDevice = new JButton("Device Preferred by Reviewers to make Reviews");
+        JButton searchByCityName = new JButton("List of all Hotels in a City");
+        JButton businessAroundHotel = new JButton("Hotels with most businesses around them");
 
         util.customiseFrame(frame);
+
+     businessAroundHotel.addActionListener(e -> {
+      util.setCallback(frame, topQueries::businessWithin100m);
+     });
+
+        searchByCityName.addActionListener(e -> {
+            String cityName = JOptionPane.showInputDialog("Enter City Name");
+            util.setCallback(frame, (connectionUrl) -> topQueries.searchByCityName(connectionUrl, cityName));
+        });
 
         preferredDevice.addActionListener(e -> {
             util.setCallback(frame, topQueries::preferredDevice);
@@ -86,7 +96,12 @@ public class SQLServerDemo {
 
         util.modifyButton(preferredDevice);
         frame.getContentPane().add(preferredDevice);
-        //arrange the buttons in a grid
+
+        util.modifyButton(searchByCityName);
+        frame.getContentPane().add(searchByCityName);
+
+        util.modifyButton(businessAroundHotel);
+        frame.getContentPane().add(businessAroundHotel);
 
 
 

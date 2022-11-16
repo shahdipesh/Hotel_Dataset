@@ -18,8 +18,15 @@ public class Util {
     public void setCallback(Frame frame, Function<String, StringBuilder> func) {
 
         StringBuilder sb = func.apply(connectionUrl);
-
         JTextArea textArea = new JTextArea(sb.toString());
+
+        //if sb has no data, show a message
+        if (sb.length() == 0) {
+            textArea.setText("There is no data to display. Please try again.");
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            JOptionPane.showMessageDialog(null, scrollPane);
+            return;
+        }
 
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -56,6 +63,10 @@ public class Util {
                         + "trustServerCertificate=false;"
                         + "loginTimeout=30;";
 
+    }
+
+    public String getConnectionUrl() {
+        return connectionUrl;
     }
 
 
