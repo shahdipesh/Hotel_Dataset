@@ -26,15 +26,20 @@ public class Util {
 
         //if sb has no data, show a message
         if (sb.length() == 0) {
-            textArea.setText("There is no data to display. Please try again.");
+            textArea.setText("There is no data to display. Please try again with different Input");
             JScrollPane scrollPane = new JScrollPane(textArea);
             JOptionPane.showMessageDialog(null, scrollPane);
             return;
         }
 
+        //enable scrolling
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(500, 500));
         JOptionPane.showMessageDialog(null, scrollPane);
+
 
     }
 
