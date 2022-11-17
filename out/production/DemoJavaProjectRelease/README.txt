@@ -1,3 +1,5 @@
+*********** The program runs on Mac computer ************
+
 To Run the Program use the following command:
 - make run
 

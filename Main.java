@@ -11,7 +11,7 @@ public class Main {
     // Replace server name, username, and password with your credentials
     public static void main(String[] args) throws SQLException, IOException {
 
-       Util util = new Util();
+        Util util = new Util();
         InsertQueries insertQueries = new InsertQueries();
         TopQueries topQueries = new TopQueries();
         Properties prop = new Properties();
@@ -19,9 +19,6 @@ public class Main {
 
 
 
-   // InsertQueries.insertPositiveReviewWordCount(util.getConnectionUrl());
-
-//
         JFrame frame = new JFrame("Hotel Reviews");
 
 
@@ -29,20 +26,21 @@ public class Main {
 
 
         JButton top5Hotels = new JButton("Top 5 Hotels");
-        JButton stayDurationHotel = new JButton("Average stay duration for each hotel");
-        JButton stayDurationTripType = new JButton("Average stay duration for each trip type");
-        JButton reviewsPerQuarter = new JButton("Total Number of Reviews made per Quarter");
-        JButton hotelRatingPerCountry = new JButton("Countries with best hotels");
-        JButton hotelsWithForeignNational = new JButton("Hotels hotly debated among foreign nationals");
-        JButton preferredDevice = new JButton("Device Preferred by Reviewers to make Reviews");
+        JButton stayDurationHotel = new JButton("Average days spent at a hotel");
+        JButton stayDurationTripType = new JButton("Average days spent based on type of trip");
+        JButton reviewsPerQuarter = new JButton("Total Number of Reviews made per Quarter Year");
+        JButton hotelRatingPerCountry = new JButton("Countries with the best hotels");
+        JButton hotelsWithForeignNational = new JButton("Hotels with the highest count of foreign reviewers");
+        JButton preferredDevice = new JButton("Percentage of reviews made from a mobile device");
         JButton searchByCityName = new JButton("Search for all Hotels in a City");
-        JButton businessAroundHotel = new JButton("Hotels with most businesses around them");
+        JButton businessAroundHotel = new JButton("Hotels with the most surrounding businesses");
+        JButton hotelsNearby = new JButton("Search for closest Hotels to a given hotel");
 
         util.customiseFrame(frame);
 
-     businessAroundHotel.addActionListener(e -> {
-      util.setCallback(frame, topQueries::businessWithin100m);
-     });
+         businessAroundHotel.addActionListener(e -> {
+          util.setCallback(frame, topQueries::businessWithin100m);
+         });
 
         searchByCityName.addActionListener(e -> {
             String cityName = JOptionPane.showInputDialog("Enter City Name");
@@ -74,6 +72,11 @@ public class Main {
             util.setCallback(frame, topQueries::top5Hotels);
         });
 
+        hotelsNearby.addActionListener(e -> {
+            String hotelName = JOptionPane.showInputDialog("Enter Hotel Name");
+            util.setCallback(frame, (connectionUrl) -> topQueries.hotelsNearby(connectionUrl, hotelName));
+        });
+
 
         util.modifyButton(top5Hotels);
         frame.getContentPane().add(top5Hotels);
@@ -101,6 +104,9 @@ public class Main {
 
         util.modifyButton(businessAroundHotel);
         frame.getContentPane().add(businessAroundHotel);
+
+        util.modifyButton(hotelsNearby);
+        frame.getContentPane().add(hotelsNearby);
 
 
 

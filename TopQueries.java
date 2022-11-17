@@ -185,7 +185,7 @@ public class TopQueries {
                     "where Hotel_Country!=Reviewer_Country\n" +
                     "group by Hotel.Hotel_Name, Hotel_Country\n" +
                     "order by No_of_foreign_National_who_reviewed desc\n" +
-                    " offset 0 rows fetch next 10 rows only";
+                    "offset 0 rows fetch next 10 rows only";
             ResultSet rs = stmt.executeQuery(SQL);
 
             // Iterate through the data in the result set and display it.
@@ -297,7 +297,56 @@ public class TopQueries {
         return sb;
     }
 
+    public  StringBuilder hotelsNearby (String connectionUrl, String hotelName) {
+
+        Util util = new Util();
+        StringBuilder sb = new StringBuilder();
+
+        float[] coordinates = util.getCoordinate(hotelName);
+
+        if(coordinates==null){
+            sb.append("Hotel not found");
+            return sb;
+        }
+
+        float lat = coordinates[0];
+        float lng = coordinates[1];
+
+        String SQL = "select distinct  H.Hotel_Name,A.Hotel_lat,A.Hotel_lng,A.Hotel_Address from Review\n" +
+                "join Hotel H on Review.Hotel_Name = H.Hotel_Name\n" +
+                "join Address A on A.Hotel_Address = H.Hotel_Address\n" +
+                "join Coordinate C on A.Hotel_lat = C.Hotel_lat and A.Hotel_lng = C.Hotel_lng\n";
+
+        try (Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();) {
+
+                ResultSet rs = stmt.executeQuery(SQL);
+
+                while (rs.next()) {
+                    String hotelName1 = rs.getString("Hotel_Name");
+                    float lat1 = rs.getFloat("Hotel_lat");
+                    float lng1 = rs.getFloat("Hotel_lng");
+                    String address = rs.getString("Hotel_Address");
+
+                    //if distance is less than 1km
+                    if(util.distance(lat,lng,lat1,lng1)<1){
+                        sb.append("Hotel Name: " + hotelName1 + "\n");
+                        sb.append("Hotel Address: " + address + "\n");
+                        sb.append("------------------------------------------\n");
+                    }
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+       return sb;
     }
+
+
+
+    }
+
 
 
 
