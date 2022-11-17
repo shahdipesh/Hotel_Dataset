@@ -244,7 +244,7 @@ public class TopQueries {
                     "                    join Coordinate C on A.Hotel_lat = C.Hotel_lat and A.Hotel_lng = C.Hotel_lng\n" +
                     "                    join City_Info CI on C.Hotel_City = CI.Hotel_City\n" +
                     "                    group by H.Hotel_Name,A.Hotel_Address,CI.Hotel_City\n" +
-                    "                    having CI.Hotel_City = "+'\''+cityName+'\''+"";
+                    "                    having CI.Hotel_City = "+ "'"+cityName +"'"+"\n";
 
             ResultSet rs = stmt.executeQuery(SQL);
 
