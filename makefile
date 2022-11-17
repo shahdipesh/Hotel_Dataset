@@ -1,11 +1,11 @@
 
-build: SQLServerDemo.class
+build: Main.class
 
-SQLServerDemo.class: SQLServerDemo.java
-	javac SQLServerDemo.java
+Main.class: Main.java
+	javac Main.java
 
-run: SQLServerDemo.class
-	java -cp .:mssql-jdbc-11.2.0.jre11.jar SQLServerDemo
+run: Main.class
+	java -cp .:mssql-jdbc-11.2.0.jre11.jar Main
 
 clean:
-	rm SQLServerDemo.class
+	rm Main.class

@@ -238,17 +238,15 @@ public class TopQueries {
         StringBuilder sb = new StringBuilder();
         try (Connection con = DriverManager.getConnection(connectionUrl);
              Statement stmt = con.createStatement();) {
-            String SQL = "select * from Review\n" +
-                    "join Hotel H on Review.Hotel_Name = H.Hotel_Name\n" +
-                    "join Address A on A.Hotel_Address = H.Hotel_Address\n" +
-                    "join Coordinate C on A.Hotel_lat = C.Hotel_lat and A.Hotel_lng = C.Hotel_lng\n" +
-                    "join City_Info CI on C.Hotel_City = CI.Hotel_City\n" +
-                    "where CI.Hotel_City = ?"+ "'" + "'";
+            String SQL = "select H.Hotel_Name,A.Hotel_Address from Review\n" +
+                    "                    join Hotel H on Review.Hotel_Name = H.Hotel_Name\n" +
+                    "                    join Address A on A.Hotel_Address = H.Hotel_Address\n" +
+                    "                    join Coordinate C on A.Hotel_lat = C.Hotel_lat and A.Hotel_lng = C.Hotel_lng\n" +
+                    "                    join City_Info CI on C.Hotel_City = CI.Hotel_City\n" +
+                    "                    group by H.Hotel_Name,A.Hotel_Address,CI.Hotel_City\n" +
+                    "                    having CI.Hotel_City = "+'\''+cityName+'\''+"";
 
-            PreparedStatement pstmt = con.prepareStatement(SQL);
-            pstmt.setString(1, cityName);
-            ResultSet rs = pstmt.executeQuery();
-
+            ResultSet rs = stmt.executeQuery(SQL);
 
             while (rs.next()) {
 

@@ -1,12 +1,11 @@
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.sql.*;
 import java.util.Properties;
 
 import static java.lang.Integer.parseInt;
 
-public class SQLServerDemo {
+public class Main {
 
     // Connect to your database.
     // Replace server name, username, and password with your credentials
@@ -36,7 +35,7 @@ public class SQLServerDemo {
         JButton hotelRatingPerCountry = new JButton("Countries with best hotels");
         JButton hotelsWithForeignNational = new JButton("Hotels hotly debated among foreign nationals");
         JButton preferredDevice = new JButton("Device Preferred by Reviewers to make Reviews");
-        JButton searchByCityName = new JButton("List of all Hotels in a City");
+        JButton searchByCityName = new JButton("Search for all Hotels in a City");
         JButton businessAroundHotel = new JButton("Hotels with most businesses around them");
 
         util.customiseFrame(frame);

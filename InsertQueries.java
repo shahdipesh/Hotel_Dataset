@@ -46,7 +46,7 @@ public class InsertQueries {
         br.readLine();
 
         //read log file's first line
-        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log.txt"));
+        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/LineToRead.txt"));
 
 
         int lineFromFile = Integer.parseInt(brLog.readLine());
@@ -79,7 +79,7 @@ public class InsertQueries {
                     statement.execute(sql);
                 }
             }catch (Exception e){
-                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log1.txt"));
+                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/logs.txt"));
                 bw.write(currLine);
                 bw.close();
             }
@@ -97,7 +97,7 @@ public class InsertQueries {
         br.readLine();
 
         //read log file's first line
-        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log.txt"));
+        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/LineToRead.txt"));
 
 
         int lineFromFile = Integer.parseInt(brLog.readLine());
@@ -125,7 +125,7 @@ public class InsertQueries {
                 }
 
             }catch (Exception e){
-                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log1.txt"));
+                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/logs.txt"));
                 bw.write(currLine);
                 bw.close();
             }
@@ -145,7 +145,7 @@ public class InsertQueries {
         br.readLine();
 
         //read log file's first line
-        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log.txt"));
+        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/LineToRead.txt"));
 
 
         int lineFromFile = Integer.parseInt(brLog.readLine());
@@ -171,7 +171,7 @@ public class InsertQueries {
                     statement.execute(sql);
                 }
             } catch (Exception e) {
-                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log1.txt"));
+                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/logs.txt"));
                 bw.write(currLine);
                 bw.close();
             }
@@ -192,7 +192,7 @@ public class InsertQueries {
         br.readLine();
 
         //read log file's first line
-        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log.txt"));
+        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/LineToRead.txt"));
 
         int lineFromFile = Integer.parseInt(brLog.readLine());
 
@@ -223,12 +223,12 @@ public class InsertQueries {
                     statement.execute(sql);
                 }
             } catch (Exception e) {
-                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log1.txt"));
+                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/logs.txt"));
                 bw.write(currLine+"");
                 bw.close();
             }
             }catch (Exception e){
-                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log1.txt"));
+                BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/logs.txt"));
                 bw.write(currLine+"");
                 bw.close();
             }
@@ -239,14 +239,14 @@ public class InsertQueries {
     public  static  void insertReview(String connectionUrl) throws SQLException, IOException {
         Connection conn = DriverManager.getConnection(connectionUrl);
         Statement statement = conn.createStatement();
-        BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log1.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/logs.txt"));
         BufferedReader br = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/Review.csv"));
 
         String line = null;
         br.readLine();
 
         //read log file's first line
-        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log.txt"));
+        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/LineToRead.txt"));
 
         int lineFromFile = 28800;
 
@@ -320,7 +320,7 @@ public class InsertQueries {
         br.readLine();
 
         //read log file's first line
-        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/log.txt"));
+        BufferedReader brLog = new BufferedReader(new FileReader("/Users/dipeshasd/Desktop/DemoJavaProjectRelease/LineToRead.txt"));
 
         int lineFromFile = 13294;
 
