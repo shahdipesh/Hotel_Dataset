@@ -3,15 +3,13 @@ import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Properties;
 import java.util.function.Function;
 
 public class Util {
     Properties prop = new Properties();
+    CreateQueries createQueries = new CreateQueries();
     String username = (prop.getProperty("username"));
     String password = (prop.getProperty("password"));
     String fileName = "auth.cfg";
@@ -161,6 +159,22 @@ public class Util {
         return null;
 
     }
+
+
+    public void createTables() throws SQLException, IOException {
+        createQueries.createAddress(this.getConnectionUrl());
+        createQueries.createCityInfo(this.getConnectionUrl());
+        createQueries.createCoordinate(this.getConnectionUrl());
+        createQueries.createDate(this.getConnectionUrl());
+        createQueries.createHotel(this.getConnectionUrl());
+        createQueries.createNationalityCountryInfo(this.getConnectionUrl());
+        createQueries.createNegativeReviewWordCount(this.getConnectionUrl());
+        createQueries.createPartOfYear(this.getConnectionUrl());
+        createQueries.createPositiveReviewWordCount(this.getConnectionUrl());
+        createQueries.createReview(this.getConnectionUrl());
+    }
+
+
 }
 
 

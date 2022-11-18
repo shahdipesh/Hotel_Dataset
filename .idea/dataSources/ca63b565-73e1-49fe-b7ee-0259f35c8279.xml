@@ -2,14 +2,6 @@
 <dataSource name="cs3380@uranium.cs.umanitoba.ca">
   <database-model serializer="dbm" dbms="MSSQL" family-id="MSSQL" format-version="4.43">
     <root id="1">
-      <Grants>2|||2|connect|G
-3|||2|connect|G
-4|||2|connect|G
-5|||2|connect|G
-0|root||1|connect sql|G
-0|root||1723|connect sql|G
-0|root||2|view any database|G</Grants>
-      <PermissionsCheckSum>9477557323</PermissionsCheckSum>
       <ServerVersion>13.0.6419</ServerVersion>
     </root>
     <collation id="2" parent="1" name="Albanian_BIN">

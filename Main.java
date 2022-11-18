@@ -7,17 +7,16 @@ import static java.lang.Integer.parseInt;
 
 public class Main {
 
-    // Connect to your database.
-    // Replace server name, username, and password with your credentials
     public static void main(String[] args) throws SQLException, IOException {
 
         Util util = new Util();
+        CreateQueries createQueries = new CreateQueries();
         InsertQueries insertQueries = new InsertQueries();
         TopQueries topQueries = new TopQueries();
         Properties prop = new Properties();
         util.config();
 
-
+        util.createTables();
 
         JFrame frame = new JFrame("Hotel Reviews");
 
@@ -72,6 +71,7 @@ public class Main {
             util.setCallback(frame, topQueries::top5Hotels);
         });
 
+        //The hotel name should be exactly as they are in the database.
         hotelsNearby.addActionListener(e -> {
             String hotelName = JOptionPane.showInputDialog("Enter Hotel Name");
             util.setCallback(frame, (connectionUrl) -> topQueries.hotelsNearby(connectionUrl, hotelName));
